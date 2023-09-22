@@ -226,162 +226,160 @@ fn test_div_wide_case2() {
 }
 
 #[test]
-fn test_div() {
-    let dividend = BigInt::new([0, 0, 0, 1, 0, 0, 0, 0, 1, 0]);
-    let divisor = BigInt::new([0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+fn test_div_big() {
+    let dividend = BigInt::new([0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    let divisor = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-    let (quo,rem) = div_rem(dividend, divisor);
+    let (_quo,rem) = div_rem(dividend, divisor);
     assert(rem.lt(divisor));
 }
 
+// div_rem_core
+// a=340282366920938463463374607431768211456
+// b=36893488186073808905
+// q=9223372027191099399
+// r=32281801945381863361
+#[test]
+fn test_div_rem_case1() {
+    let a = BigInt::new([0, 0, 0, 0, 1, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([9, 9, 2, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [3221225479, 2147483645, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [1073741761, 3221225429, 1, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
+// a=79228162532711081671548469323
+// b=4294967296
+// q=18446744078004518913
+// r=75
+#[test]
+fn test_div_rem_case2() {
+    let a = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [1, 1, 1, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [75, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // div_rem_core
-// // a=340282366920938463463374607431768211456
-// // b=36893488186073808905
-// // q=9223372027191099399
-// // r=32281801945381863361
-// #[test]
-// fn test_div_rem_case1() {
-//     let a = BigInt::new([0, 0, 0, 0, 1, 0, 0, 0]);
-//     let b = BigInt::new([9, 9, 2, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [3221225479, 2147483645, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [1073741761, 3221225429, 1, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=79228162532711081671548469323
+// b=79228162532711081671548469323
+// q=1
+// r=0
+#[test]
+fn test_div_rem_case3() {
+    let a = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=79228162532711081671548469323
-// // b=4294967296
-// // q=18446744078004518913
-// // r=75
-// #[test]
-// fn test_div_rem_case2() {
-//     let a = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0]);
-//     let b = BigInt::new([0, 1, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [1, 1, 1, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [75, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=75
+// b=4294967371
+// q=0
+// r=75
+#[test]
+fn test_div_rem_case4() {
+    let a = BigInt::new([75, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([75, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [75, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=79228162532711081671548469323
-// // b=79228162532711081671548469323
-// // q=1
-// // r=0
-// #[test]
-// fn test_div_rem_case3() {
-//     let a = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0]);
-//     let b = BigInt::new([75, 1, 1, 1, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [1, 0, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=11
+// b=5
+// q=2
+// r=1
+#[test]
+fn test_div_rem_case5() {
+    let a = BigInt::new([11, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([5, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=75
-// // b=4294967371
-// // q=0
-// // r=75
-// #[test]
-// fn test_div_rem_case4() {
-//     let a = BigInt::new([75, 0, 0, 0, 0, 0, 0, 0]);
-//     let b = BigInt::new([75, 1, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [75, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=4294967296
+// b=2
+// q=2147483648
+// r=0
+#[test]
+fn test_div_rem_case6() {
+    let a = BigInt::new([0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [2147483648, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=11
-// // b=5
-// // q=2
-// // r=1
-// #[test]
-// fn test_div_rem_case5() {
-//     let a = BigInt::new([11, 0, 0, 0, 0, 0, 0, 0]);
-//     let b = BigInt::new([5, 0, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [2, 0, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [1, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=26959946667150639794667015087019630673637144422540572481103610249216
+// b=2
+// q=13479973333575319897333507543509815336818572211270286240551805124608
+// r=0
+#[test]
+fn test_div_rem_case7() {
+    let a = BigInt::new([0, 0, 0, 0, 0, 0, 0, 1, 0, 0]);
+    let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 2147483648, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=4294967296
-// // b=2
-// // q=2147483648
-// // r=0
-// #[test]
-// fn test_div_rem_case6() {
-//     let a = BigInt::new([0, 1, 0, 0, 0, 0, 0, 0]);
-//     let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [2147483648, 0, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=18446744073709551616
+// b=2
+// q=9223372036854775808
+// r=0
+#[test]
+fn test_div_rem_case8() {
+    let a = BigInt::new([0, 0, 1, 0, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [0, 2147483648, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=26959946667150639794667015087019630673637144422540572481103610249216
-// // b=2
-// // q=13479973333575319897333507543509815336818572211270286240551805124608
-// // r=0
-// #[test]
-// fn test_div_rem_case7() {
-//     let a = BigInt::new([0, 0, 0, 0, 0, 0, 0, 1]);
-//     let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [0, 0, 0, 0, 0, 0, 2147483648, 0];
-//     let expected_remainder : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
+// a=18446744073709551616
+// b=8589934592
+// q=2147483648
+// r=0
+#[test]
+fn test_div_rem_case9() {
+    let a = BigInt::new([0, 0, 1, 0, 0, 0, 0, 0, 0, 0]);
+    let b = BigInt::new([0, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let expected_product_limbs : [u32; constants::NUM_LIMBS] = [2147483648, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let expected_remainder : [u32; constants::NUM_LIMBS] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let (q, r) = div_rem(a, b);
+    assert(expected_product_limbs == q.limbs);
+    assert(expected_remainder == r.limbs);
+}
 
-// // a=18446744073709551616
-// // b=2
-// // q=9223372036854775808
-// // r=0
-// #[test]
-// fn test_div_rem_case8() {
-//     let a = BigInt::new([0, 0, 1, 0, 0, 0, 0, 0]);
-//     let b = BigInt::new([2, 0, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [0, 2147483648, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
-
-// // a=18446744073709551616
-// // b=8589934592
-// // q=2147483648
-// // r=0
-// #[test]
-// fn test_div_rem_case9() {
-//     let a = BigInt::new([0, 0, 1, 0, 0, 0, 0, 0]);
-//     let b = BigInt::new([0, 2, 0, 0, 0, 0, 0, 0]);
-//     let expected_product_limbs : [u32; 8] = [2147483648, 0, 0, 0, 0, 0, 0, 0];
-//     let expected_remainder : [u32; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
-//     let (q, r) = div_rem(a, b);
-//     assert(expected_product_limbs == q.limbs);
-//     assert(expected_remainder == r.limbs);
-// }
-
-// #[test]
-// fn test_div_wide_allow_overflow_case1() {
-//     let (q_hi, q_med, q_lo, r_hi, r_med, r_lo) = div_wide_allow_overflow(
-//         1, 0, 0,
-//         0, 0, 2,
-//     );
-//     assert(q_hi == 0);
-//     assert(q_med == 2147483648);
-//     assert(q_lo == 0);
-//     assert(r_hi == 0);
-//     assert(r_med == 0);
-//     assert(r_lo == 0);
-// }
+#[test]
+fn test_div_wide_allow_overflow_case1() {
+    let (q_hi, q_med, q_lo, r_hi, r_med, r_lo) = div_wide_allow_overflow(
+        1, 0, 0,
+        0, 0, 2,
+    );
+    assert(q_hi == 0);
+    assert(q_med == 2147483648);
+    assert(q_lo == 0);
+    assert(r_hi == 0);
+    assert(r_med == 0);
+    assert(r_lo == 0);
+}

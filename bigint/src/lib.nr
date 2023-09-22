@@ -570,34 +570,34 @@ fn test_from_bytes_le_case2() {
 //     assert(x4.eq(y4) == true);
 // }
 
-// #[test]
-// fn test_shift() {
-//     let x = BigInt::new([0 as u32, 1, 0, 0, 1, 0, 0, 0]);
+#[test]
+fn test_shift() {
+    let x = BigInt::new([0 as u32, 1, 0, 0, 1, 0, 0, 0, 0, 0]);
 
-//     let left_shift_0 = x.shift(0, true);
-//     assert(left_shift_0.limbs == [0, 1, 0, 0, 1, 0, 0, 0]);
-//     let left_shift_1 = x.shift(1, true);
-//     assert(left_shift_1.limbs == [1, 0, 0, 1, 0, 0, 0, 0]);
-//     let left_shift_2 = x.shift(2, true);
-//     assert(left_shift_2.limbs == [0, 0, 1, 0, 0, 0, 0, 0]);
-//     let left_shift_3 = x.shift(3, true);
-//     assert(left_shift_3.limbs == [0, 1, 0, 0, 0, 0, 0, 0]);
-//     let left_shift_4 = x.shift(4, true);
-//     assert(left_shift_4.limbs == [1, 0, 0, 0, 0, 0, 0, 0]);
-//     let left_shift_7 = x.shift(7, true);
-//     assert(left_shift_7.limbs == [0, 0, 0, 0, 0, 0, 0, 0]);
+    let left_shift_0 = x.shift(0, true);
+    assert(left_shift_0.limbs == [0, 1, 0, 0, 1, 0, 0, 0, 0, 0]);
+    let left_shift_1 = x.shift(1, true);
+    assert(left_shift_1.limbs == [1, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+    let left_shift_2 = x.shift(2, true);
+    assert(left_shift_2.limbs == [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]);
+    let left_shift_3 = x.shift(3, true);
+    assert(left_shift_3.limbs == [0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let left_shift_4 = x.shift(4, true);
+    assert(left_shift_4.limbs == [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let left_shift_7 = x.shift(7, true);
+    assert(left_shift_7.limbs == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-//     let y = BigInt::new([7 as u32, 0, 0, 0, 0, 3, 0, 0]);
-//     let right_shift_0 = y.shift(0, false);
-//     assert(right_shift_0.limbs == [7, 0, 0, 0, 0, 3, 0, 0]);
-//     let right_shift_1 = y.shift(1, false);
-//     assert(right_shift_1.limbs == [0, 7, 0, 0, 0, 0, 3, 0]);
-//     let right_shift_2 = y.shift(2, false);
-//     assert(right_shift_2.limbs == [0, 0, 7, 0, 0, 0, 0, 3]);
-//     let right_shift_3 = y.shift(3, false);
-//     assert(right_shift_3.limbs == [0, 0, 0, 7, 0, 0, 0, 0]);
-//     let right_shift_4 = y.shift(4, false);
-//     assert(right_shift_4.limbs == [0, 0, 0, 0, 7, 0, 0, 0]);
-//     let right_shift_7 = y.shift(7, false);
-//     assert(right_shift_7.limbs == [0, 0, 0, 0, 0, 0, 0, 7]);
-// }
+    let y = BigInt::new([7 as u32, 0, 0, 0, 0, 0, 0, 3, 0, 0]);
+    let right_shift_0 = y.shift(0, false);
+    assert(right_shift_0.limbs == [7, 0, 0, 0, 0, 0, 0, 3, 0, 0]);
+    let right_shift_1 = y.shift(1, false);
+    assert(right_shift_1.limbs == [0, 7, 0, 0, 0, 0, 0, 0, 3, 0]);
+    let right_shift_2 = y.shift(2, false);
+    assert(right_shift_2.limbs == [0, 0, 7, 0, 0, 0, 0, 0, 0, 3]);
+    let right_shift_3 = y.shift(3, false);
+    assert(right_shift_3.limbs == [0, 0, 0, 7, 0, 0, 0, 0, 0, 0]);
+    let right_shift_4 = y.shift(4, false);
+    assert(right_shift_4.limbs == [0, 0, 0, 0, 7, 0, 0, 0, 0, 0]);
+    let right_shift_7 = y.shift(9, false);
+    assert(right_shift_7.limbs == [0, 0, 0, 0, 0, 0, 0, 0, 0, 7]);
+}
