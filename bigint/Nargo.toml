@@ -1,4 +1,6 @@
 [package]
+name = "noir_bigint"
+type = "lib"
 authors = [""]
 compiler_version = "0.1"
 
